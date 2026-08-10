@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}
+Issue / Return
+{% endblock %}
+
+{% block content %}
+
+
+<!-- ==============================
+     PAGE HEADER
+============================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Issue / Return</h2>
+
+        <p>
+            Manage book borrowing and
+            physical-copy returns.
+        </p>
+
+    </div>
+
+    <a
+        href="{{ url_for('admin_dashboard') }}"
+        class="btn btn-secondary"
+    >
+        Back to Dashboard
+    </a>
+
+</div>
+
+
+<!-- ==============================
+     MODULE CARDS
+============================== -->
+
+<div class="dashboard-grid">
+
+
+    <!-- Borrow Book -->
+
+    <div class="dashboard-card">
+
+        <h3>📖 Borrow Book</h3>
+
+        <p>
+            Select a student and an available
+            book to issue a physical copy.
+        </p>
+
+        <a
+            href="{{ url_for('borrow_book_route') }}"
+            class="btn btn-success"
+        >
+            Borrow Book
+        </a>
+
+    </div>
+
+
+    <!-- Borrowed Books / Return -->
+
+    <div class="dashboard-card">
+
+        <h3>🔄 Borrowed Books / Return</h3>
+
+        <p>
+            View currently borrowed books
+            and return physical copies
+            using their QR codes.
+        </p>
+
+        <a
+            href="{{ url_for('borrowed_books') }}"
+            class="btn btn-success"
+        >
+            View Borrowed Books
+        </a>
+
+    </div>
+
+
+</div>
+
+
+<!-- ==============================
+     PAGE ACTIONS
+============================== -->
+
+<div class="action-row">
+
+    <a
+        href="{{ url_for('admin_dashboard') }}"
+        class="btn btn-secondary"
+    >
+        Back to Dashboard
+    </a>
+
+</div>
+
+
+{% endblock %}

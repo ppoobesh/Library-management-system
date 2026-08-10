@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+        Student Library Management System
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for(
+            'static',
+            filename='css/style.css'
+        ) }}"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- ========================================= -->
+<!-- HEADER -->
+<!-- ========================================= -->
+
+<header>
+
+    <div class="header-inner">
+
+        <h1>
+            Student Library Management System
+        </h1>
+
+
+        <!--
+            Show username and role only when
+            the user is logged in AND
+            the current page is not the login page.
+        -->
+
+        {% if session.get("user_id")
+              and request.endpoint != "login" %}
+
+            <div class="header-user">
+
+                <span>
+                    {{ session.get("username") }}
+                </span>
+
+                <span class="role-badge">
+                    {{ session.get("role") }}
+                </span>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</header>
+
+
+
+<!-- ========================================= -->
+<!-- MAIN CONTENT -->
+<!-- ========================================= -->
+
+<main class="container">
+
+
+    <!-- ===================================== -->
+    <!-- FLASH MESSAGES -->
+    <!-- ===================================== -->
+
+    {% with messages = get_flashed_messages() %}
+
+        {% if messages %}
+
+            <div class="flash-container">
+
+                {% for message in messages %}
+
+                    <div class="flash-message">
+
+                        {{ message }}
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+    {% endwith %}
+
+
+
+    <!-- ===================================== -->
+    <!-- PAGE CONTENT -->
+    <!-- ===================================== -->
+
+    {% block content %}
+
+    {% endblock %}
+
+
+</main>
+
+
+
+<!-- ========================================= -->
+<!-- FOOTER -->
+<!-- ========================================= -->
+
+<footer>
+
+    <p>
+        &copy; 2026 Student Library Management System
+    </p>
+
+</footer>
+
+
+</body>
+
+</html>

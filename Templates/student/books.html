@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block title %}
+Library Books
+{% endblock %}
+
+{% block content %}
+
+
+<!-- ==============================
+     PAGE HEADER
+============================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Library Books</h2>
+
+        <p>
+            Browse library books and reserve
+            books that are currently unavailable.
+        </p>
+
+    </div>
+
+    <a
+        href="{{ url_for('student_dashboard') }}"
+        class="btn btn-secondary"
+    >
+        Back to Dashboard
+    </a>
+
+</div>
+
+
+<!-- ==============================
+     BOOKS TABLE
+============================== -->
+
+{% if books %}
+
+<div class="table-container">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Book Code</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Available</th>
+                <th>Shelf</th>
+                <th>Status</th>
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for book in books %}
+
+            <tr>
+
+                <!-- Book Code -->
+
+                <td>
+                    <strong>
+                        {{ book.bookcode }}
+                    </strong>
+                </td>
+
+
+                <!-- Title -->
+
+                <td>
+                    {{ book.title }}
+                </td>
+
+
+                <!-- Author -->
+
+                <td>
+                    {{ book.author }}
+                </td>
+
+
+                <!-- Category -->
+
+                <td>
+                    {{ book.category }}
+                </td>
+
+
+                <!-- Available Copies -->
+
+                <td>
+                    {{ book.available }}
+                    /
+                    {{ book.copies }}
+                </td>
+
+
+                <!-- Shelf -->
+
+                <td>
+                    {{ book.shelf }}
+                </td>
+
+
+                <!-- ==============================
+                     BOOK STATUS
+                =============================== -->
+
+                <td>
+
+                    {% if book.available > 0 %}
+
+                        <span class="status status-active">
+                            Available
+                        </span>
+
+                    {% else %}
+
+                        <span class="status status-inactive">
+                            Not Available
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+
+                <!-- ==============================
+                     ACTION
+                =============================== -->
+
+                <td>
+
+                    {% if book.available > 0 %}
+
+                        <span class="availability-message">
+                            Available for borrowing
+                        </span>
+
+                    {% else %}
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'reserve_book',
+                                book_id=book.book_id
+                            ) }}"
+                            class="inline-form"
+                        >
+
+                            <button
+                                type="submit"
+                                class="btn btn-success"
+                                onclick="
+                                    return confirm(
+                                        'Do you want to reserve this book?'
+                                    );
+                                "
+                            >
+                                Reserve Book
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+{% else %}
+
+
+<!-- ==============================
+     EMPTY STATE
+============================== -->
+
+<div class="empty-state">
+
+    <h3>No Books Found</h3>
+
+    <p>
+        There are currently no books
+        available in the library catalogue.
+    </p>
+
+</div>
+
+
+{% endif %}
+
+
+<!-- ==============================
+     PAGE ACTIONS
+============================== -->
+
+<div class="action-row">
+
+    <a
+        href="{{ url_for('student_reservations') }}"
+        class="btn"
+    >
+        My Reservations
+    </a>
+
+    <a
+        href="{{ url_for('student_dashboard') }}"
+        class="btn btn-secondary"
+    >
+        Back to Dashboard
+    </a>
+
+</div>
+
+
+{% endblock %}

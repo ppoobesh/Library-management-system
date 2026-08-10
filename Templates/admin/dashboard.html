@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Dashboard
+{% endblock %}
+
+{% block content %}
+
+
+<!-- ==============================
+     PAGE HEADER
+============================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Admin Dashboard</h2>
+
+        <p>
+            Welcome,
+            <strong>{{ session["username"] }}</strong>.
+            Manage the Library Management System.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- ==============================
+     DASHBOARD MODULES
+============================== -->
+
+<div class="dashboard-grid">
+
+
+    <!-- Student Management -->
+
+    <div class="dashboard-card">
+
+        <h3>👨‍🎓 Student Management</h3>
+
+        <p>
+            Add, edit, delete, search and
+            manage student accounts.
+        </p>
+
+        <a
+            href="{{ url_for('view_students') }}"
+            class="btn btn-success"
+        >
+            Open Module
+        </a>
+
+    </div>
+
+
+    <!-- Book Management -->
+
+    <div class="dashboard-card">
+
+        <h3>📚 Book Management</h3>
+
+        <p>
+            Add, edit, delete and manage
+            books and physical copies.
+        </p>
+
+        <a
+            href="{{ url_for('view_books') }}"
+            class="btn btn-success"
+        >
+            Open Module
+        </a>
+
+    </div>
+
+
+    <!-- Issue / Return -->
+
+    <div class="dashboard-card">
+
+        <h3>🔄 Issue / Return</h3>
+
+        <p>
+            Issue books to students and
+            process book returns.
+        </p>
+
+        <a
+            href="{{ url_for('issue_return_module') }}"
+            class="btn btn-success"
+        >
+            Open Module
+        </a>
+
+    </div>
+
+
+    <!-- Reservations -->
+
+    <div class="dashboard-card">
+
+        <h3>📌 Reservations</h3>
+
+        <p>
+            View and manage student
+            book reservations.
+        </p>
+
+        <a
+            href="{{ url_for('admin_reservations') }}"
+            class="btn btn-success"
+        >
+            Open Module
+        </a>
+
+    </div>
+
+
+    <!-- Lost Books -->
+
+    <div class="dashboard-card">
+
+        <h3>⚠️ Lost Books</h3>
+
+        <p>
+            View borrowed books and
+            manage books reported as lost.
+        </p>
+
+        <a
+            href="{{ url_for('lost_books') }}"
+            class="btn btn-success"
+        >
+            Open Module
+        </a>
+
+    </div>
+
+
+    <!-- Reports -->
+
+    <div class="dashboard-card">
+
+        <h3>📊 Reports</h3>
+
+        <p>
+            View library statistics and
+            export reports using Pandas.
+        </p>
+
+        <a
+            href="{{ url_for('reports_dashboard') }}"
+            class="btn btn-success"
+        >
+            Open Module
+        </a>
+
+    </div>
+
+
+</div>
+
+
+<!-- ==============================
+     ACCOUNT SECTION
+============================== -->
+
+<div class="dashboard-section-title">
+
+    <h2>Account</h2>
+
+</div>
+
+
+<div class="dashboard-grid account-grid">
+
+
+    <!-- Logout -->
+
+    <div class="dashboard-card">
+
+        <h3>🚪 Logout</h3>
+
+        <p>
+            Sign out securely from the
+            administrator account.
+        </p>
+
+        <a
+            href="{{ url_for('logout') }}"
+            class="btn btn-danger"
+        >
+            Logout
+        </a>
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}
