@@ -22,7 +22,3 @@ def init_db():
 def close_connection(connection):
     if connection:
         connection.close()
-
-
-#if __name__ == '__main__':
-#    init_db()

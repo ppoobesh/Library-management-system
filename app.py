@@ -38,7 +38,6 @@ from services.book_service import (
 from services.transaction_service import (
     borrow_book,
     get_borrowed_books,
-    return_book,
     return_book_by_copy_code
 )
 from services.lost_book_service import (
@@ -71,75 +70,45 @@ def home():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-
     if request.method == "POST":
-
         username = request.form["username"].strip()
         password = request.form["password"]
-
         login_type = request.form.get(
             "login_type"
         )
-
         user = authenticate_user(
             username,
             password
         )
-
         if not user:
-
             flash(
                 "Invalid username or password."
             )
-
             return render_template(
                 "login.html"
             )
-
-        # --------------------------------
-        # Verify Correct Login Portal
-        # --------------------------------
-
         if user.role != login_type:
-
             if login_type == "Admin":
-
                 flash(
                     "This account is not an "
                     "administrator account."
                 )
-
             else:
-
                 flash(
                     "This account is not a "
                     "student account."
                 )
-
             return render_template(
                 "login.html"
             )
 
-        # --------------------------------
-        # Clear Any Old Session
-        # --------------------------------
-
         session.clear()
-
-        # --------------------------------
-        # Create New Session
-        # --------------------------------
 
         session["user_id"] = user.user_id
         session["username"] = user.username
         session["role"] = user.role
 
-        # --------------------------------
-        # Redirect by Role
-        # --------------------------------
-
         if user.role == "Admin":
-
             return redirect(
                 url_for("admin_dashboard")
             )
@@ -148,13 +117,7 @@ def login():
             url_for("student_dashboard")
         )
 
-    # --------------------------------
-    # Always Show Login Page on GET
-    # --------------------------------
-
-    return render_template(
-        "login.html"
-    )
+    return render_template("login.html")
 
 @app.route('/admin/dashboard')
 def admin_dashboard():
@@ -173,51 +136,34 @@ def student_dashboard():
     if session["role"] != "Student":
         return redirect(url_for("login"))
 
-    student = get_student_by_roll_no(
-        session["username"]
-    )
-
+    student = get_student_by_roll_no(session["username"])
     if student is None:
         flash("Student profile not found.")
         return redirect(url_for("logout"))
-
     return render_template(
         "student/dashboard.html",
         student=student
     )
 
-
 @app.route("/admin/reports")
 def reports_dashboard():
-
     if "user_id" not in session:
         return redirect(url_for("login"))
-
     if session.get("role") != "Admin":
         return redirect(url_for("login"))
-
     summary = get_report_summary()
-
     return render_template(
         "reports/reports.html",
-        summary=summary
-    )
+        summary=summary)
 
 @app.route("/admin/reports/transactions")
 def transaction_report():
-
     if "user_id" not in session:
         return redirect(url_for("login"))
-
     if session.get("role") != "Admin":
         return redirect(url_for("login"))
-
     dataframe = get_transaction_report()
-
-    records = dataframe.to_dict(
-        orient="records"
-    )
-
+    records = dataframe.to_dict(orient="records")
     return render_template(
         "reports/transaction_report.html",
         transactions=records
@@ -225,55 +171,29 @@ def transaction_report():
 
 @app.route("/admin/reports/transactions/export")
 def export_transaction_report():
-
     if "user_id" not in session:
         return redirect(url_for("login"))
 
     if session.get("role") != "Admin":
         return redirect(url_for("login"))
-
     dataframe = get_transaction_report()
-
-    os.makedirs(
-        REPORT_FOLDER,
-        exist_ok=True
-    )
-
-    file_path = os.path.join(
-        REPORT_FOLDER,
-        "transaction_report.csv"
-    )
-
-    dataframe.to_csv(
-        file_path,
-        index=False
-    )
-
-    return send_file(
-        file_path,
-        as_attachment=True,
-        download_name="transaction_report.csv"
-    )
+    os.makedirs(REPORT_FOLDER,exist_ok=True)
+    file_path = os.path.join(REPORT_FOLDER,"transaction_report.csv")
+    dataframe.to_csv(file_path,index=False)
+    return send_file(file_path,as_attachment=True,download_name="transaction_report.csv")
 
 @app.route("/admin/reports/reservations")
 def reservation_report():
-
     if "user_id" not in session:
         return redirect(url_for("login"))
 
     if session.get("role") != "Admin":
         return redirect(url_for("login"))
-
     dataframe = get_reservation_report()
-
-    records = dataframe.to_dict(
-        orient="records"
-    )
-
+    records = dataframe.to_dict(orient="records")
     return render_template(
         "reports/reservation_report.html",
-        reservations=records
-    )
+        reservations=records)
 
 @app.route("/admin/reports/reservations/export")
 def export_reservation_report():
@@ -286,26 +206,12 @@ def export_reservation_report():
 
     dataframe = get_reservation_report()
 
-    os.makedirs(
-        REPORT_FOLDER,
-        exist_ok=True
-    )
+    os.makedirs(REPORT_FOLDER,exist_ok=True)
 
-    file_path = os.path.join(
-        REPORT_FOLDER,
-        "reservation_report.csv"
-    )
+    file_path = os.path.join(REPORT_FOLDER,"reservation_report.csv")
+    dataframe.to_csv(file_path,index=False)
 
-    dataframe.to_csv(
-        file_path,
-        index=False
-    )
-
-    return send_file(
-        file_path,
-        as_attachment=True,
-        download_name="reservation_report.csv"
-    )
+    return send_file(file_path,as_attachment=True,download_name="reservation_report.csv")
 
 @app.route("/student/borrowed-books")
 def student_borrowed_books():
@@ -316,17 +222,13 @@ def student_borrowed_books():
     if session["role"] != "Student":
         return redirect(url_for("login"))
 
-    student = get_student_by_roll_no(
-        session["username"]
-    )
+    student = get_student_by_roll_no(session["username"])
 
     if student is None:
         flash("Student profile not found.")
         return redirect(url_for("logout"))
 
-    transactions = get_borrowed_books(
-        student.student_id
-    )
+    transactions = get_borrowed_books(student.student_id)
 
     return render_template(
         "student/borrowed_books.html",
@@ -523,14 +425,7 @@ def add_book_route():
 
     return render_template("books/add_book.html")
 
-@app.route(
-    "/books/edit/<int:book_id>",
-    methods=["GET", "POST"]
-)
-@app.route(
-    "/books/edit/<int:book_id>",
-    methods=["GET", "POST"]
-)
+@app.route("/books/edit/<int:book_id>",methods=["GET", "POST"])
 def edit_book_route(book_id):
 
     if "user_id" not in session:
@@ -546,24 +441,14 @@ def edit_book_route(book_id):
         return redirect(url_for("view_books"))
 
     if request.method == "POST":
-
-        # -----------------------------
-        # Update book details
-        # -----------------------------
-
         book.title = request.form["title"].strip()
         book.author = request.form["author"].strip()
         book.category = request.form["category"].strip()
 
         try:
 
-            book.copies = int(
-                request.form["copies"]
-            )
-
-            book.price = float(
-                request.form["price"]
-            )
+            book.copies = int(request.form["copies"])
+            book.price = float(request.form["price"])
 
         except ValueError:
 
@@ -572,37 +457,19 @@ def edit_book_route(book_id):
                 "price must be a valid number."
             )
 
-            return render_template(
-                "books/edit_book.html",
-                book=book
-            )
+            return render_template("books/edit_book.html",book=book)
 
         book.shelf = request.form["shelf"].strip()
-
-        # -----------------------------
-        # Update Book
-        # -----------------------------
 
         success, message = update_book(book)
 
         flash(message)
 
         if success:
+            update_reservations_for_book(book.book_id)
+            return redirect(url_for("view_books"))
 
-            # Update waiting reservations
-            # if copies became available
-            update_reservations_for_book(
-                book.book_id
-            )
-
-            return redirect(
-                url_for("view_books")
-            )
-
-    return render_template(
-        "books/edit_book.html",
-        book=book
-    )
+    return render_template("books/edit_book.html",book=book)
 
 @app.route("/books/delete/<int:book_id>")
 def delete_book_route(book_id):
@@ -694,16 +561,12 @@ def scan_return(transaction_id):
     if transaction is None:
         flash("Borrowed book not found.")
 
-        return redirect(
-            url_for("borrowed_books")
-        )
+        return redirect(url_for("borrowed_books"))
 
     return render_template(
         "transactions/scan_return.html",
         transaction=transaction
     )
-
-
 
 @app.route("/admin/return-book/qr", methods=["POST"])
 def return_book_qr():
@@ -714,15 +577,9 @@ def return_book_qr():
     if session.get("role") != "Admin":
         return redirect(url_for("login"))
 
-    transaction_id = request.form.get(
-        "transaction_id"
-    )
+    transaction_id = request.form.get("transaction_id")
 
-    copy_code = request.form.get(
-        "copy_code",
-        ""
-    ).strip()
-
+    copy_code = request.form.get("copy_code","").strip()
 
     if not transaction_id or not copy_code:
 
@@ -730,24 +587,14 @@ def return_book_qr():
             "Please upload the correct book QR code."
         )
 
-        return redirect(
-            url_for(
-                "borrowed_books"
-            )
-        )
-
+        return redirect(url_for("borrowed_books"))
 
     success, message = return_book_by_copy_code(
         copy_code
     )
-
-
     flash(message)
 
-
-    return redirect(
-        url_for("borrowed_books")
-    )
+    return redirect(url_for("borrowed_books"))
 
 @app.route("/admin/issue-return")
 def issue_return_module():
@@ -759,9 +606,7 @@ def issue_return_module():
         flash("Admin access required.")
         return redirect(url_for("login"))
 
-    return render_template(
-        "transactions/issue_return.html"
-    )
+    return render_template("transactions/issue_return.html")
 
 @app.route("/student/profile")
 def student_profile():
@@ -772,18 +617,13 @@ def student_profile():
     if session["role"] != "Student":
         return redirect(url_for("login"))
 
-    student = get_student_by_roll_no(
-        session["username"]
-    )
+    student = get_student_by_roll_no(session["username"])
 
     if student is None:
         flash("Student profile not found.")
         return redirect(url_for("logout"))
 
-    return render_template(
-        "student/profile.html",
-        student=student
-    )
+    return render_template("student/profile.html",student=student)
 
 @app.route("/admin/lost-books")
 def lost_books():

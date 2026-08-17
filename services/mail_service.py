@@ -12,77 +12,25 @@ from config import (
     RESERVATION_HOLD_DAYS
 )
 
-
-# =========================================================
-# COMMON EMAIL FUNCTION
-# =========================================================
-
-def send_email(
-    student_email,
-    subject,
-    body
-):
-
+def send_email(student_email,subject,body):
     message = MIMEMultipart()
-
     message["From"] = MAIL_FROM
     message["To"] = student_email
     message["Subject"] = subject
-
-    message.attach(
-        MIMEText(body, "plain")
-    )
-
+    message.attach(MIMEText(body, "plain"))
     try:
-
-        with smtplib.SMTP(
-            MAIL_SERVER,
-            MAIL_PORT
-        ) as server:
-
+        with smtplib.SMTP(MAIL_SERVER,MAIL_PORT) as server:
             server.starttls()
-
-            server.login(
-                MAIL_USERNAME,
-                MAIL_PASSWORD
-            )
-
-            server.sendmail(
-                MAIL_FROM,
-                student_email,
-                message.as_string()
-            )
-
-        print(
-            f"Email sent successfully to "
-            f"{student_email}"
-        )
-
+            server.login(MAIL_USERNAME,MAIL_PASSWORD)
+            server.sendmail(MAIL_FROM,student_email,message.as_string())
+        print(f"Email sent successfully to{student_email}")
         return True, "Email sent successfully."
-
     except Exception as e:
-
-        print(
-            "Email Error:",
-            e
-        )
-
+        print("Email Error:",e)
         return False, "Failed to send email."
 
-
-# =========================================================
-# RESERVATION READY EMAIL
-# =========================================================
-
-def send_reservation_ready_email(
-    student_name,
-    student_email,
-    book_title,
-    book_code
-):
-
+def send_reservation_ready_email(student_name,student_email,book_title,book_code):
     subject = "Your Reserved Book is Ready"
-
     body = f"""
 Hello {student_name},
 
@@ -106,16 +54,7 @@ Thank you,
 Library Management System
 """
 
-    return send_email(
-        student_email,
-        subject,
-        body
-    )
-
-
-# =========================================================
-# BORROW CONFIRMATION EMAIL
-# =========================================================
+    return send_email(student_email,subject, body)
 
 def send_borrow_confirmation_email(
     student_name,
@@ -126,9 +65,7 @@ def send_borrow_confirmation_email(
     issue_date,
     due_date
 ):
-
     subject = "Library Book Issued Successfully"
-
     body = f"""
 Hello {student_name},
 
@@ -150,9 +87,4 @@ to avoid overdue fines.
 Thank you,
 Library Management System
 """
-
-    return send_email(
-        student_email,
-        subject,
-        body
-    )
+    return send_email(student_email,subject,body)
